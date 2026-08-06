@@ -1,8 +1,0 @@
-name = "student-management-system"
-compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".next"
-
-[vars]
-NEXTAUTH_URL = "https://student-management-system.pages.dev"
-# Add DATABASE_URL and AUTH_SECRET in Cloudflare Pages Dashboard -> Settings -> Environment variables

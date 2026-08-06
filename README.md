@@ -74,36 +74,32 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment Options
 
-### Vercel + Neon (PostgreSQL)
+### Deploying with Vercel & Neon (PostgreSQL)
 
-1. Set up a PostgreSQL database on [Neon](https://neon.tech).
-2. Update the `datasource` provider in `prisma/schema.prisma` from `sqlite` to `postgresql`.
-3. Import the project into Vercel and configure environment variables:
-   - `DATABASE_URL`
-   - `NEXTAUTH_SECRET`
-   - `NEXTAUTH_URL`
-4. Set build command:
-   ```bash
-   npx prisma generate && npx prisma db push && next build
-   ```
+1. **Set up PostgreSQL Database on Neon**:
+   - Create a project on [Neon Tech](https://neon.tech).
+   - Copy your PostgreSQL connection string (`DATABASE_URL`), ensuring `?sslmode=require` is appended.
 
-### Cloudflare Pages
+2. **Push Schema & Seed Database to Neon**:
+   - Update your local `.env` file with your Neon `DATABASE_URL`.
+   - Push database tables to Neon:
+     ```bash
+     npx prisma db push
+     ```
+   - (Optional) Seed initial data (Admin, Teachers, Students):
+     ```bash
+     npx prisma db seed
+     ```
 
-1. Environment variables to configure in Cloudflare Pages:
-   - `DATABASE_URL`
-   - `NEXTAUTH_SECRET`
-   - `NEXTAUTH_URL`
-2. Deploy using Wrangler:
-   ```bash
-   npx wrangler pages deploy .next
-   ```
-
-### Local Public Sharing with Cloudflare Tunnel
-
-To share your local dev server publicly without port forwarding:
-```bash
-cloudflared tunnel --url http://localhost:3000
-```
+3. **Deploy to Vercel**:
+   - Push your project to GitHub / GitLab / Bitbucket.
+   - Import the repository in [Vercel](https://vercel.com).
+   - Configure Environment Variables in Vercel project settings:
+     - `DATABASE_URL` = `postgresql://...` (your Neon connection string)
+     - `NEXTAUTH_SECRET` = `your-secret-key` (generate with `openssl rand -base64 32`)
+     - `NEXTAUTH_URL` = `https://your-app-name.vercel.app`
+     - `AUTH_SECRET` = `your-secret-key`
+   - Vercel automatically runs `prisma generate && next build` via the `postinstall` script in `package.json`.
 
 ---
 
