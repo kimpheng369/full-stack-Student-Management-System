@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { X, GraduationCap } from 'lucide-react';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { toast } from 'sonner';
 
 const studentSchema = z.object({
@@ -40,14 +41,22 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
       gender: 'Male',
       birthday: '2005-01-01',
+      departmentId: '',
+      classId: '',
     },
   });
+
+  const departmentId = watch('departmentId');
+  const classId = watch('classId');
+  const gender = watch('gender');
 
   useEffect(() => {
     // Fetch departments and classes for dropdown options
@@ -153,7 +162,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <input
                 {...register('firstName')}
                 placeholder="John"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
               {errors.firstName && <p className="text-xs text-rose-500 mt-1">{errors.firstName.message}</p>}
             </div>
@@ -165,7 +174,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <input
                 {...register('lastName')}
                 placeholder="Doe"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
               {errors.lastName && <p className="text-xs text-rose-500 mt-1">{errors.lastName.message}</p>}
             </div>
@@ -180,7 +189,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
                 {...register('email')}
                 type="email"
                 placeholder="john.doe@school.edu"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
               {errors.email && <p className="text-xs text-rose-500 mt-1">{errors.email.message}</p>}
             </div>
@@ -192,7 +201,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <input
                 {...register('phone')}
                 placeholder="+1 (555) 000-0000"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
               {errors.phone && <p className="text-xs text-rose-500 mt-1">{errors.phone.message}</p>}
             </div>
@@ -203,17 +212,18 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Department *
               </label>
-              <select
-                {...register('departmentId')}
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
-              >
-                <option value="">Select Department</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name} ({d.code})
-                  </option>
-                ))}
-              </select>
+              <CustomSelect
+                value={departmentId || ''}
+                onChange={(val) => setValue('departmentId', val, { shouldValidate: true })}
+                options={[
+                  { value: '', label: 'Select Department' },
+                  ...departments.map((d) => ({
+                    value: d.id,
+                    label: `${d.name} (${d.code})`,
+                  })),
+                ]}
+                className="w-full"
+              />
               {errors.departmentId && <p className="text-xs text-rose-500 mt-1">{errors.departmentId.message}</p>}
             </div>
 
@@ -221,17 +231,18 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Class *
               </label>
-              <select
-                {...register('classId')}
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
-              >
-                <option value="">Select Class</option>
-                {classes.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.className}
-                  </option>
-                ))}
-              </select>
+              <CustomSelect
+                value={classId || ''}
+                onChange={(val) => setValue('classId', val, { shouldValidate: true })}
+                options={[
+                  { value: '', label: 'Select Class' },
+                  ...classes.map((c) => ({
+                    value: c.id,
+                    label: c.className,
+                  })),
+                ]}
+                className="w-full"
+              />
               {errors.classId && <p className="text-xs text-rose-500 mt-1">{errors.classId.message}</p>}
             </div>
           </div>
@@ -241,14 +252,17 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Gender *
               </label>
-              <select
-                {...register('gender')}
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
+              <CustomSelect
+                value={gender || 'Male'}
+                onChange={(val) => setValue('gender', val as any, { shouldValidate: true })}
+                options={[
+                  { value: 'Male', label: 'Male' },
+                  { value: 'Female', label: 'Female' },
+                  { value: 'Other', label: 'Other' },
+                ]}
+                searchable={false}
+                className="w-full"
+              />
             </div>
 
             <div>
@@ -258,7 +272,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
               <input
                 type="date"
                 {...register('birthday')}
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
               {errors.birthday && <p className="text-xs text-rose-500 mt-1">{errors.birthday.message}</p>}
             </div>
@@ -271,7 +285,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
             <input
               {...register('address')}
               placeholder="123 Campus Way, City, State"
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             />
             {errors.address && <p className="text-xs text-rose-500 mt-1">{errors.address.message}</p>}
           </div>
@@ -285,7 +299,7 @@ export function StudentModal({ isOpen, onClose, onSuccess, student }: StudentMod
                 {...register('password')}
                 type="password"
                 placeholder="Defaults to: student123"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
             </div>
           )}

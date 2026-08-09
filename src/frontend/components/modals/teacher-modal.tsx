@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { X, UserCheck } from 'lucide-react';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { toast } from 'sonner';
 
 const teacherSchema = z.object({
@@ -34,10 +35,17 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<TeacherFormValues>({
     resolver: zodResolver(teacherSchema),
+    defaultValues: {
+      departmentId: '',
+    },
   });
+
+  const departmentId = watch('departmentId');
 
   useEffect(() => {
     async function fetchDepartments() {
@@ -127,7 +135,7 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
             <input
               {...register('name')}
               placeholder="Dr. John Smith"
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             />
             {errors.name && <p className="text-xs text-rose-500 mt-1">{errors.name.message}</p>}
           </div>
@@ -140,7 +148,7 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
               {...register('email')}
               type="email"
               placeholder="john.smith@school.edu"
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             />
             {errors.email && <p className="text-xs text-rose-500 mt-1">{errors.email.message}</p>}
           </div>
@@ -152,7 +160,7 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
             <input
               {...register('phone')}
               placeholder="+1 (555) 000-0000"
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             />
             {errors.phone && <p className="text-xs text-rose-500 mt-1">{errors.phone.message}</p>}
           </div>
@@ -161,17 +169,18 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Department *
             </label>
-            <select
-              {...register('departmentId')}
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
-            >
-              <option value="">Select Department</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} ({d.code})
-                </option>
-              ))}
-            </select>
+            <CustomSelect
+              value={departmentId || ''}
+              onChange={(val) => setValue('departmentId', val, { shouldValidate: true })}
+              options={[
+                { value: '', label: 'Select Department' },
+                ...departments.map((d) => ({
+                  value: d.id,
+                  label: `${d.name} (${d.code})`,
+                })),
+              ]}
+              className="w-full"
+            />
             {errors.departmentId && <p className="text-xs text-rose-500 mt-1">{errors.departmentId.message}</p>}
           </div>
 
@@ -184,7 +193,7 @@ export function TeacherModal({ isOpen, onClose, onSuccess, teacher }: TeacherMod
                 {...register('password')}
                 type="password"
                 placeholder="Defaults to: teacher123"
-                className="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
               />
             </div>
           )}
