@@ -4,9 +4,6 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { AttendanceStatus } from '@prisma/client';
 
-// Revalidate at most once per 60 seconds (Next.js route cache)
-export const revalidate = 60;
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -129,10 +126,6 @@ export async function GET() {
       attendanceByStatus,
       departmentDistribution,
       gradeDistribution,
-    }, {
-      headers: {
-        'Cache-Control': 's-maxage=60, stale-while-revalidate=300',
-      },
     });
   } catch (error: any) {
     console.error('Error fetching dashboard stats:', error);

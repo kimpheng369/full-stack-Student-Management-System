@@ -1,110 +1,61 @@
 'use client';
 
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faArrowTrendUp, faArrowTrendDown, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: IconDefinition;
+  icon: LucideIcon;
   change?: string;
   changeType?: 'positive' | 'negative' | 'neutral';
-  color?: 'amber' | 'sage' | 'violet' | 'sky' | 'rose' | 'orange';
-  isLoading?: boolean;
+  color?: 'blue' | 'emerald' | 'purple' | 'amber' | 'indigo' | 'rose';
 }
-
-const colorMap = {
-  amber: {
-    strip: 'stat-strip-amber',
-    iconBg: 'bg-[#fff7e6] dark:bg-[#f59e0b]/10',
-    iconColor: 'text-[#f59e0b]',
-    valueMark: 'bg-[#fff7e6] dark:bg-[#f59e0b]/10 text-[#f59e0b]',
-  },
-  sage: {
-    strip: 'stat-strip-sage',
-    iconBg: 'bg-[#ecfdf5] dark:bg-[#22c55e]/10',
-    iconColor: 'text-[#22c55e]',
-    valueMark: 'bg-[#ecfdf5] dark:bg-[#22c55e]/10 text-[#22c55e]',
-  },
-  violet: {
-    strip: 'stat-strip-violet',
-    iconBg: 'bg-[#f3f0ff] dark:bg-[#818cf8]/10',
-    iconColor: 'text-[#818cf8]',
-    valueMark: 'bg-[#f3f0ff] dark:bg-[#818cf8]/10 text-[#818cf8]',
-  },
-  sky: {
-    strip: 'stat-strip-sky',
-    iconBg: 'bg-[#eff8ff] dark:bg-[#38bdf8]/10',
-    iconColor: 'text-[#38bdf8]',
-    valueMark: 'bg-[#eff8ff] dark:bg-[#38bdf8]/10 text-[#38bdf8]',
-  },
-  rose: {
-    strip: 'stat-strip-rose',
-    iconBg: 'bg-[#fff1f2] dark:bg-[#f43f5e]/10',
-    iconColor: 'text-[#f43f5e]',
-    valueMark: 'bg-[#fff1f2] dark:bg-[#f43f5e]/10 text-[#f43f5e]',
-  },
-  orange: {
-    strip: 'stat-strip-orange',
-    iconBg: 'bg-[#fff4ec] dark:bg-[#f97316]/10',
-    iconColor: 'text-[#f97316]',
-    valueMark: 'bg-[#fff4ec] dark:bg-[#f97316]/10 text-[#f97316]',
-  },
-};
 
 export function StatCard({
   title,
   value,
-  icon,
+  icon: Icon,
   change,
   changeType = 'positive',
-  color = 'orange',
-  isLoading = false,
+  color = 'blue',
 }: StatCardProps) {
-  const c = colorMap[color];
-
-  if (isLoading) {
-    return (
-      <div className="relative p-5 bg-white dark:bg-[#1e1a17] rounded-xl border-l-[3px] border-[#e8e2db] dark:border-[#2a2520] border border-[#f0ebe5] dark:border-[#2a2520] flex flex-col gap-4">
-        <div className="flex items-start justify-between">
-          <div className="skeleton h-3 w-20" />
-          <div className="skeleton h-9 w-9 rounded-xl" />
-        </div>
-        <div className="flex items-end justify-between">
-          <div className="skeleton h-8 w-14" />
-          <div className="skeleton h-5 w-16 rounded-full" />
-        </div>
-      </div>
-    );
-  }
-
-  const changeIcon = changeType === 'positive' ? faArrowTrendUp : changeType === 'negative' ? faArrowTrendDown : faMinus;
-  const changeBg = changeType === 'positive'
-    ? 'text-[#22c55e] bg-[#f0fdf4] dark:bg-[#22c55e]/10'
-    : changeType === 'negative'
-    ? 'text-[#f43f5e] bg-[#fff1f2] dark:bg-[#f43f5e]/10'
-    : 'text-[#a09890] bg-[#f5f1ed] dark:bg-[#2a2520]';
+  const colorMap = {
+    blue: 'from-blue-500 to-indigo-600 text-white shadow-blue-500/20',
+    emerald: 'from-emerald-500 to-teal-600 text-white shadow-emerald-500/20',
+    purple: 'from-purple-500 to-indigo-600 text-white shadow-purple-500/20',
+    amber: 'from-amber-500 to-orange-600 text-white shadow-amber-500/20',
+    indigo: 'from-indigo-500 to-blue-600 text-white shadow-indigo-500/20',
+    rose: 'from-rose-500 to-pink-600 text-white shadow-rose-500/20',
+  };
 
   return (
-    <div className={`relative p-5 bg-white dark:bg-[#1e1a17] rounded-xl ${c.strip} border border-[#f0ebe5] dark:border-[#2a2520] flex flex-col justify-between card-lift cursor-default`}>
-      <div className="flex items-start justify-between mb-4">
-        <span className="text-[11px] font-semibold text-[#a09890] dark:text-[#6a6260] uppercase tracking-wider leading-tight pr-2">
+    <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           {title}
         </span>
-        <div className={`w-9 h-9 rounded-xl ${c.iconBg} flex items-center justify-center shrink-0`}>
-          <FontAwesomeIcon icon={icon} className={`w-4 h-4 ${c.iconColor}`} />
+        <div
+          className={`w-11 h-11 rounded-2xl bg-gradient-to-tr ${colorMap[color]} flex items-center justify-center shadow-md transform group-hover:scale-110 transition-transform duration-200`}
+        >
+          <Icon className="w-5 h-5" />
         </div>
       </div>
 
-      <div className="flex items-end justify-between gap-2">
-        <span className="text-2xl font-bold text-[#1c1714] dark:text-[#e8e2da] tracking-tight animate-count-up">
+      <div className="mt-4 flex items-baseline justify-between">
+        <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {value}
         </span>
         {change && (
-          <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full shrink-0 ${changeBg}`}>
-            <FontAwesomeIcon icon={changeIcon} className="w-2.5 h-2.5" />
+          <span
+            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+              changeType === 'positive'
+                ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
+                : changeType === 'negative'
+                ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+            }`}
+          >
             {change}
           </span>
         )}
