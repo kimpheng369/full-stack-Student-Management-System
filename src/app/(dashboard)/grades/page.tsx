@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/frontend/components/dashboard-layout';
 import { Award, Save, Calculator, CheckCircle2, AlertOctagon } from 'lucide-react';
 import { calculateGrade } from '@/backend/lib/utils';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { toast } from 'sonner';
 
 export default function GradesPage() {
@@ -162,34 +163,31 @@ export default function GradesPage() {
             <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
               Subject Course
             </label>
-            <select
+            <CustomSelect
               value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:ring-2 focus:ring-blue-500"
-            >
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.subjectName} [{s.code}]
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedSubject(val)}
+              options={subjects.map((s) => ({
+                value: s.id,
+                label: `${s.subjectName} [${s.code}]`,
+                sublabel: `Code: ${s.code}`,
+              }))}
+              className="min-w-64"
+            />
           </div>
 
           <div>
             <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
               Class
             </label>
-            <select
+            <CustomSelect
               value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:ring-2 focus:ring-blue-500"
-            >
-              {classes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.className}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedClass(val)}
+              options={classes.map((c) => ({
+                value: c.id,
+                label: c.className,
+              }))}
+              className="min-w-48"
+            />
           </div>
         </div>
 

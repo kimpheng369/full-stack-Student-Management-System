@@ -6,6 +6,7 @@ import { FileSpreadsheet, Download, FileText, Filter, CheckCircle2 } from 'lucid
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { toast } from 'sonner';
 
 export default function ReportsPage() {
@@ -267,61 +268,52 @@ export default function ReportsPage() {
 
             {reportType === 'students' && (
               <>
-                <select
+                <CustomSelect
                   value={selectedDept}
-                  onChange={(e) => setSelectedDept(e.target.value)}
-                  className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
-                >
-                  <option value="">All Departments</option>
-                  {departments.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedDept(val)}
+                  options={[
+                    { value: '', label: 'All Departments' },
+                    ...departments.map((d) => ({ value: d.id, label: d.name })),
+                  ]}
+                  className="min-w-44"
+                />
 
-                <select
+                <CustomSelect
                   value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
-                >
-                  <option value="">All Classes</option>
-                  {classes.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.className}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedClass(val)}
+                  options={[
+                    { value: '', label: 'All Classes' },
+                    ...classes.map((c) => ({ value: c.id, label: c.className })),
+                  ]}
+                  className="min-w-40"
+                />
               </>
             )}
 
             {(reportType === 'attendance' || reportType === 'grades') && (
               <>
-                <select
+                <CustomSelect
                   value={selectedSubject}
-                  onChange={(e) => setSelectedSubject(e.target.value)}
-                  className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
-                >
-                  <option value="">All Subjects</option>
-                  {subjects.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.subjectName} [{s.code}]
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedSubject(val)}
+                  options={[
+                    { value: '', label: 'All Subjects' },
+                    ...subjects.map((s) => ({
+                      value: s.id,
+                      label: `${s.subjectName} [${s.code}]`,
+                    })),
+                  ]}
+                  className="min-w-60"
+                />
 
-                <select
+                <CustomSelect
                   value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
-                >
-                  <option value="">All Classes</option>
-                  {classes.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.className}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedClass(val)}
+                  options={[
+                    { value: '', label: 'All Classes' },
+                    ...classes.map((c) => ({ value: c.id, label: c.className })),
+                  ]}
+                  className="min-w-40"
+                />
               </>
             )}
           </div>

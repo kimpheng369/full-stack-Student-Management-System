@@ -22,6 +22,7 @@ import {
 import { StudentModal } from '@/frontend/components/modals/student-modal';
 import { DeleteConfirmModal } from '@/frontend/components/modals/delete-confirm-modal';
 import { TableSkeleton } from '@/frontend/components/skeleton';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { toast } from 'sonner';
 
 export default function StudentsPage() {
@@ -142,32 +143,26 @@ export default function StudentsPage() {
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-slate-400 shrink-0" />
-              <select
+              <CustomSelect
                 value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
-                className="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Departments</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setSelectedDept(val)}
+                options={[
+                  { value: '', label: 'All Departments' },
+                  ...departments.map((d) => ({ value: d.id, label: d.name })),
+                ]}
+                className="min-w-44"
+              />
             </div>
 
-            <select
+            <CustomSelect
               value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">All Classes</option>
-              {classes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.className}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedClass(val)}
+              options={[
+                { value: '', label: 'All Classes' },
+                ...classes.map((c) => ({ value: c.id, label: c.className })),
+              ]}
+              className="min-w-40"
+            />
 
             {(search || selectedDept || selectedClass) && (
               <button
