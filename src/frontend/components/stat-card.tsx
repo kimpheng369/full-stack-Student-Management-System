@@ -111,7 +111,7 @@ export function StatCard({
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         ['--spotlight-opacity' as any]: spotlightOpacity,
       }}
-      className="spotlight-card p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between group cursor-pointer animate-fade-in"
+      className="spotlight-card p-5 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800/90 hover:dark:border-indigo-500/50 shadow-sm dark:shadow-xl dark:shadow-black/40 transition-all duration-200 flex flex-col justify-between group cursor-pointer animate-fade-in"
     >
       <div className="flex items-center justify-between z-10">
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
