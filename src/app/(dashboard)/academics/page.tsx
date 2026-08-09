@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/frontend/components/dashboard-layout';
 import { BookOpen, Building2, School, Plus } from 'lucide-react';
+import { CustomSelect } from '@/frontend/components/custom-select';
 import { TableSkeleton, DatabaseLoadingIndicator } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
@@ -252,21 +253,17 @@ export default function AcademicsPage() {
                     className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-700"
                   />
                 </div>
-                <div className="w-48">
+                <div className="w-56">
                   <label className="block text-xs font-bold mb-1">Department</label>
-                  <select
-                    required
+                  <CustomSelect
                     value={classDeptId}
-                    onChange={(e) => setClassDeptId(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-700"
-                  >
-                    <option value="">Select Dept</option>
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setClassDeptId(val)}
+                    options={[
+                      { value: '', label: 'Select Dept' },
+                      ...departments.map((d) => ({ value: d.id, label: d.name })),
+                    ]}
+                    className="w-full"
+                  />
                 </div>
                 <button type="submit" className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">
                   Save
@@ -324,35 +321,27 @@ export default function AcademicsPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1">Department</label>
-                  <select
-                    required
+                  <CustomSelect
                     value={subjDeptId}
-                    onChange={(e) => setSubjDeptId(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-700"
-                  >
-                    <option value="">Select Dept</option>
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setSubjDeptId(val)}
+                    options={[
+                      { value: '', label: 'Select Dept' },
+                      ...departments.map((d) => ({ value: d.id, label: d.name })),
+                    ]}
+                    className="w-full"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1">Assigned Teacher</label>
-                  <select
-                    required
+                  <CustomSelect
                     value={subjTeacherId}
-                    onChange={(e) => setSubjTeacherId(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-700"
-                  >
-                    <option value="">Select Teacher</option>
-                    {teachers.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setSubjTeacherId(val)}
+                    options={[
+                      { value: '', label: 'Select Teacher' },
+                      ...teachers.map((t) => ({ value: t.id, label: t.name })),
+                    ]}
+                    className="w-full"
+                  />
                 </div>
                 <div className="md:col-span-4 flex justify-end">
                   <button type="submit" className="px-5 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">
