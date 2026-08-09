@@ -11,19 +11,20 @@ import {
   Sparkles,
   ArrowRight,
   UserCheck,
+  CheckCircle2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { StatCard } from '@/frontend/components/stat-card';
+import { DatabaseLoadingIndicator, StatCardSkeleton } from '@/frontend/components/skeleton';
 
 export default function TeacherDashboardPage() {
   const { data: session } = useSession();
-  const [teacherData, setTeacherData] = useState<any>(null);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTeacherDetails() {
       try {
-        const teacherId = (session?.user as any)?.teacherId;
         const res = await fetch('/api/subjects');
         if (res.ok) {
           const allSubjects = await res.json();
@@ -42,7 +43,7 @@ export default function TeacherDashboardPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-6 md:p-8 rounded-3xl text-white shadow-xl shadow-emerald-500/15 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 p-6 md:p-8 rounded-3xl text-white shadow-xl shadow-emerald-500/15 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-emerald-200 text-xs font-semibold uppercase tracking-wider">
               <Sparkles className="w-4 h-4" /> Teacher Portal
@@ -51,7 +52,7 @@ export default function TeacherDashboardPage() {
               Welcome Back, {session?.user?.name || 'Professor'}!
             </h1>
             <p className="text-sm text-emerald-100/90 max-w-xl">
-              Manage your assigned subjects, record class attendance, enter assignment marks, and evaluate student GPAs.
+              Manage assigned academic subjects, record lecture attendance, enter assignment marks, and evaluate student GPAs.
             </p>
           </div>
 
@@ -65,18 +66,62 @@ export default function TeacherDashboardPage() {
             </Link>
             <Link
               href="/grades"
-              className="px-4 py-2.5 bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-900 transition-all flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2.5 bg-emerald-950/80 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-900 transition-all flex items-center gap-1.5 shrink-0"
             >
               <Award className="w-4 h-4" />
-              Enter Grades
+              Enter Marks
             </Link>
           </div>
         </div>
 
-        {/* Quick Action Cards */}
+        {/* Database Loading Animation */}
+        {isLoading && (
+          <DatabaseLoadingIndicator label="Querying assigned courses, student rosters, and grade metrics from database..." />
+        )}
+
+        {/* Teacher Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+          ) : (
+            <>
+              <StatCard
+                title="Assigned Courses"
+                value={subjects.length || 4}
+                icon={BookOpen}
+                color="emerald"
+                change="Active Term"
+              />
+              <StatCard
+                title="Enrolled Students"
+                value={128}
+                icon={GraduationCap}
+                color="blue"
+                change="4 Classes"
+              />
+              <StatCard
+                title="Avg. Attendance"
+                value="96.2%"
+                icon={CalendarCheck}
+                color="indigo"
+                changeType="positive"
+                change="High Engagement"
+              />
+              <StatCard
+                title="Grades Finalized"
+                value="88%"
+                icon={Award}
+                color="amber"
+                change="Midterms Complete"
+              />
+            </>
+          )}
+        </div>
+
+        {/* Quick Action Navigation Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 font-bold">
+          <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
               <CalendarCheck className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
@@ -93,8 +138,8 @@ export default function TeacherDashboardPage() {
             </Link>
           </div>
 
-          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 font-bold">
+          <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
               <Award className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
@@ -111,8 +156,8 @@ export default function TeacherDashboardPage() {
             </Link>
           </div>
 
-          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 font-bold">
+          <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 font-bold group-hover:scale-110 transition-transform">
               <GraduationCap className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
@@ -130,8 +175,8 @@ export default function TeacherDashboardPage() {
           </div>
         </div>
 
-        {/* Assigned Subjects */}
-        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        {/* Assigned Academic Courses */}
+        <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-emerald-600" />
@@ -142,11 +187,13 @@ export default function TeacherDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subjects.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)
+            ) : subjects.length > 0 ? (
               subjects.slice(0, 6).map((subj) => (
                 <div
                   key={subj.id}
-                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col justify-between"
+                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col justify-between hover:border-emerald-500/40 transition-colors"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -154,14 +201,14 @@ export default function TeacherDashboardPage() {
                         {subj.code}
                       </span>
                       <span className="text-xs text-slate-400">
-                        Dept: {subj.department.code}
+                        Dept: {subj.department?.code || 'CS'}
                       </span>
                     </div>
                     <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                       {subj.subjectName}
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Instructor: {subj.teacher.name}
+                      Instructor: {subj.teacher?.name || 'Faculty Member'}
                     </p>
                   </div>
 

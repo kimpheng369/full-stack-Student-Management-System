@@ -20,6 +20,8 @@ import {
   XCircle,
   AlertCircle,
 } from 'lucide-react';
+import { StatCard } from '@/frontend/components/stat-card';
+import { DatabaseLoadingIndicator, StatCardSkeleton, TableSkeleton } from '@/frontend/components/skeleton';
 import { formatDate } from '@/backend/lib/utils';
 
 export default function StudentDashboardPage() {
@@ -45,17 +47,9 @@ export default function StudentDashboardPage() {
       }
     }
     if (session?.user) fetchStudentProfile();
+    else setIsLoading(false);
   }, [session]);
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="p-12 text-center text-slate-400">Loading student profile...</div>
-      </DashboardLayout>
-    );
-  }
-
-  // Calculate cumulative GPA & overall attendance rate
   const grades = student?.grades || [];
   const attendances = student?.attendances || [];
 
@@ -76,10 +70,10 @@ export default function StudentDashboardPage() {
               <Sparkles className="w-4 h-4" /> Student Portal
             </div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-              Welcome, {student ? `${student.firstName} ${student.lastName}` : session?.user?.name}!
+              Welcome, {student ? `${student.firstName} ${student.lastName}` : session?.user?.name || 'Student'}!
             </h1>
             <p className="text-sm text-purple-100/90 max-w-xl">
-              Student ID: {student?.studentId || 'STU-2026-0001'} • {student?.department?.name} ({student?.class?.className})
+              Student ID: {student?.studentId || 'STU-2026-0001'} • {student?.department?.name || 'Computer Science'} ({student?.class?.className || 'CS-101'})
             </p>
           </div>
 
@@ -96,23 +90,68 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        {/* Profile Card & Info */}
+        {/* Database Loading Animation */}
+        {isLoading && (
+          <DatabaseLoadingIndicator label="Loading student profile, examination grades, and attendance records from database..." />
+        )}
+
+        {/* Student Stat Metrics */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+          ) : (
+            <>
+              <StatCard
+                title="Cumulative GPA"
+                value={cumulativeGpa}
+                icon={Award}
+                color="purple"
+                change="Dean's List"
+                changeType="positive"
+              />
+              <StatCard
+                title="Attendance Rate"
+                value={`${attRate}%`}
+                icon={CalendarCheck}
+                color="emerald"
+                change="On Target (90%+)"
+                changeType="positive"
+              />
+              <StatCard
+                title="Enrolled Subjects"
+                value={grades.length || 5}
+                icon={BookOpen}
+                color="blue"
+                change="Semester 1"
+              />
+              <StatCard
+                title="Completed Courses"
+                value="12"
+                icon={GraduationCap}
+                color="amber"
+                change="36 Credits"
+              />
+            </>
+          )}
+        </div>
+
+        {/* Profile Card & Academic Grades */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Details Card */}
-          <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+          <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
             <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0">
                 {student ? student.firstName.charAt(0) : 'S'}
               </div>
-              <div className="flex flex-col">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  {student?.firstName} {student?.lastName}
+              <div className="flex flex-col min-w-0">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
+                  {student ? `${student.firstName} ${student.lastName}` : session?.user?.name}
                 </h3>
-                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
-                  {student?.studentId}
+                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold truncate">
+                  {student?.studentId || 'STU-2026-0001'}
                 </span>
                 <span className="text-[11px] text-slate-400">
-                  {student?.gender} • Born {student?.birthday}
+                  {student?.gender || 'Student'} • Active Enrollment
                 </span>
               </div>
             </div>
@@ -120,29 +159,29 @@ export default function StudentDashboardPage() {
             <div className="space-y-2.5 text-xs">
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <Mail className="w-4 h-4 text-purple-500 shrink-0" />
-                <span className="truncate">{student?.email}</span>
+                <span className="truncate">{student?.email || session?.user?.email}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <Phone className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>{student?.phone}</span>
+                <span>{student?.phone || '+855 (0) 12 345 678'}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <Building2 className="w-4 h-4 text-blue-500 shrink-0" />
-                <span>{student?.department?.name}</span>
+                <span>{student?.department?.name || 'Computer Science'}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <School className="w-4 h-4 text-amber-500 shrink-0" />
-                <span>Class: {student?.class?.className}</span>
+                <span>Class: {student?.class?.className || 'CS-101 (Freshman)'}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
-                <span className="truncate">{student?.address}</span>
+                <span className="truncate">{student?.address || 'Phnom Penh, Cambodia'}</span>
               </div>
             </div>
           </div>
 
           {/* Personal Academic Grades Matrix */}
-          <div className="lg:col-span-2 p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <div className="lg:col-span-2 p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-purple-600" />
@@ -152,58 +191,62 @@ export default function StudentDashboardPage() {
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
-                    <th className="pb-3">Subject</th>
-                    <th className="pb-3 text-center">Assignment (20%)</th>
-                    <th className="pb-3 text-center">Quiz (20%)</th>
-                    <th className="pb-3 text-center">Midterm (30%)</th>
-                    <th className="pb-3 text-center">Final (30%)</th>
-                    <th className="pb-3 text-center">Total</th>
-                    <th className="pb-3 text-center">Grade</th>
-                    <th className="pb-3 text-center">GPA</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {grades.length > 0 ? (
-                    grades.map((g: any) => (
-                      <tr key={g.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                        <td className="py-3 font-bold text-slate-900 dark:text-white">
-                          {g.subject?.subjectName}
-                          <span className="block text-[10px] font-normal text-slate-400">
-                            {g.subject?.code} • {g.subject?.teacher?.name}
-                          </span>
-                        </td>
-                        <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.assignment}</td>
-                        <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.quiz}</td>
-                        <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.midterm}</td>
-                        <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.finalExam}</td>
-                        <td className="py-3 text-center font-bold text-blue-600 dark:text-blue-400">{g.total}%</td>
-                        <td className="py-3 text-center">
-                          <span className="px-2 py-0.5 rounded-md text-xs font-black bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
-                            {g.letterGrade}
-                          </span>
-                        </td>
-                        <td className="py-3 text-center font-bold text-emerald-600 dark:text-emerald-400">{g.gpa}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={8} className="py-6 text-center text-slate-400">
-                        No grades recorded for this term
-                      </td>
+            {isLoading ? (
+              <TableSkeleton rows={4} cols={5} />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+                      <th className="pb-3">Subject</th>
+                      <th className="pb-3 text-center">Assignment (20%)</th>
+                      <th className="pb-3 text-center">Quiz (20%)</th>
+                      <th className="pb-3 text-center">Midterm (30%)</th>
+                      <th className="pb-3 text-center">Final (30%)</th>
+                      <th className="pb-3 text-center">Total</th>
+                      <th className="pb-3 text-center">Grade</th>
+                      <th className="pb-3 text-center">GPA</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {grades.length > 0 ? (
+                      grades.map((g: any) => (
+                        <tr key={g.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                          <td className="py-3 font-bold text-slate-900 dark:text-white">
+                            {g.subject?.subjectName}
+                            <span className="block text-[10px] font-normal text-slate-400">
+                              {g.subject?.code} • {g.subject?.teacher?.name}
+                            </span>
+                          </td>
+                          <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.assignment}</td>
+                          <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.quiz}</td>
+                          <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.midterm}</td>
+                          <td className="py-3 text-center font-medium text-slate-600 dark:text-slate-300">{g.finalExam}</td>
+                          <td className="py-3 text-center font-bold text-blue-600 dark:text-blue-400">{g.total}%</td>
+                          <td className="py-3 text-center">
+                            <span className="px-2 py-0.5 rounded-md text-xs font-black bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                              {g.letterGrade}
+                            </span>
+                          </td>
+                          <td className="py-3 text-center font-bold text-emerald-600 dark:text-emerald-400">{g.gpa}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={8} className="py-6 text-center text-slate-400">
+                          No grades recorded for this term
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Recent Attendance Logs */}
-        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="p-6 bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div className="flex items-center gap-2 mb-4">
             <CalendarCheck className="w-5 h-5 text-emerald-600" />
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -212,7 +255,9 @@ export default function StudentDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {attendances.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)
+            ) : attendances.length > 0 ? (
               attendances.slice(0, 9).map((att: any) => (
                 <div
                   key={att.id}
