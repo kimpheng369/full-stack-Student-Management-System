@@ -23,6 +23,7 @@ import {
 import { AttendanceChart } from '@/frontend/components/charts/attendance-chart';
 import { DepartmentChart } from '@/frontend/components/charts/department-chart';
 import { GradeChart } from '@/frontend/components/charts/grade-chart';
+import { DatabaseLoadingIndicator, StatCardSkeleton, ChartSkeleton } from '@/frontend/components/skeleton';
 import Link from 'next/link';
 import { DashboardStats } from '@/types';
 import { formatDate } from '@/backend/lib/utils';
@@ -76,47 +77,58 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
+        {/* Database Loading Indicator */}
+        {isLoading && (
+          <DatabaseLoadingIndicator label="Querying database metrics, enrollment stats, and department analytics..." />
+        )}
+
         {/* 6 Key Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <StatCard
-            title="Total Students"
-            value={isLoading ? '...' : stats?.totalStudents || 0}
-            icon={GraduationCap}
-            change="+12% vs last term"
-            color="blue"
-          />
-          <StatCard
-            title="Total Teachers"
-            value={isLoading ? '...' : stats?.totalTeachers || 0}
-            icon={UserCheck}
-            color="emerald"
-          />
-          <StatCard
-            title="Departments"
-            value={isLoading ? '...' : stats?.totalDepartments || 0}
-            icon={Building2}
-            color="purple"
-          />
-          <StatCard
-            title="Total Classes"
-            value={isLoading ? '...' : stats?.totalClasses || 0}
-            icon={School}
-            color="amber"
-          />
-          <StatCard
-            title="Total Subjects"
-            value={isLoading ? '...' : stats?.totalSubjects || 0}
-            icon={BookOpen}
-            color="indigo"
-          />
-          <StatCard
-            title="Attendance Rate"
-            value={isLoading ? '...' : `${stats?.attendancePercentage || 95}%`}
-            icon={CalendarCheck}
-            changeType="positive"
-            change="Target 90%+"
-            color="rose"
-          />
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)
+          ) : (
+            <>
+              <StatCard
+                title="Total Students"
+                value={stats?.totalStudents || 0}
+                icon={GraduationCap}
+                change="+12% vs last term"
+                color="blue"
+              />
+              <StatCard
+                title="Total Teachers"
+                value={stats?.totalTeachers || 0}
+                icon={UserCheck}
+                color="emerald"
+              />
+              <StatCard
+                title="Departments"
+                value={stats?.totalDepartments || 0}
+                icon={Building2}
+                color="purple"
+              />
+              <StatCard
+                title="Total Classes"
+                value={stats?.totalClasses || 0}
+                icon={School}
+                color="amber"
+              />
+              <StatCard
+                title="Total Subjects"
+                value={stats?.totalSubjects || 0}
+                icon={BookOpen}
+                color="indigo"
+              />
+              <StatCard
+                title="Attendance Rate"
+                value={`${stats?.attendancePercentage || 95}%`}
+                icon={CalendarCheck}
+                changeType="positive"
+                change="Target 90%+"
+                color="rose"
+              />
+            </>
+          )}
         </div>
 
         {/* Analytics Charts Grid */}

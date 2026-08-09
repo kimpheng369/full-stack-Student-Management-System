@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { TeacherModal } from '@/frontend/components/modals/teacher-modal';
 import { DeleteConfirmModal } from '@/frontend/components/modals/delete-confirm-modal';
+import { DatabaseLoadingIndicator, StatCardSkeleton } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function TeachersPage() {
@@ -107,10 +108,15 @@ export default function TeachersPage() {
           </div>
         </div>
 
+        {/* Database Loading Animation */}
+        {isLoading && (
+          <DatabaseLoadingIndicator label="Fetching faculty records and assigned subjects from database..." />
+        )}
+
         {/* Teachers Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
-            <div className="col-span-3 p-12 text-center text-slate-400">Loading faculty list...</div>
+            Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)
           ) : filteredTeachers.length > 0 ? (
             filteredTeachers.map((t) => (
               <div

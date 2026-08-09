@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { StudentModal } from '@/frontend/components/modals/student-modal';
 import { DeleteConfirmModal } from '@/frontend/components/modals/delete-confirm-modal';
+import { TableSkeleton } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function StudentsPage() {
@@ -184,28 +185,25 @@ export default function StudentsPage() {
         </div>
 
         {/* Data Table */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="py-4 px-6">Student</th>
-                  <th className="py-4 px-4">Student ID</th>
-                  <th className="py-4 px-4">Department</th>
-                  <th className="py-4 px-4">Class</th>
-                  <th className="py-4 px-4">Gender</th>
-                  <th className="py-4 px-4">Contact</th>
-                  <th className="py-4 px-6 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-400">
-                      Loading students list...
-                    </td>
+        {isLoading ? (
+          <TableSkeleton rows={6} cols={6} />
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                    <th className="py-4 px-6">Student</th>
+                    <th className="py-4 px-4">Student ID</th>
+                    <th className="py-4 px-4">Department</th>
+                    <th className="py-4 px-4">Class</th>
+                    <th className="py-4 px-4">Gender</th>
+                    <th className="py-4 px-4">Contact</th>
+                    <th className="py-4 px-6 text-right">Actions</th>
                   </tr>
-                ) : students.length > 0 ? (
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {students.length > 0 ? (
                   students.map((s) => (
                     <tr
                       key={s.id}
@@ -308,6 +306,7 @@ export default function StudentsPage() {
             </div>
           </div>
         </div>
+      )}
       </div>
 
       {/* Add / Edit Student Modal */}
