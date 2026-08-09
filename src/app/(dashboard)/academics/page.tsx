@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/frontend/components/dashboard-layout';
 import { BookOpen, Building2, School, Plus } from 'lucide-react';
+import { TableSkeleton, DatabaseLoadingIndicator } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function AcademicsPage() {
@@ -11,6 +12,7 @@ export default function AcademicsPage() {
   const [classes, setClasses] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [teachers, setTeachers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Creation forms state
   const [showDeptForm, setShowDeptForm] = useState(false);
@@ -29,6 +31,7 @@ export default function AcademicsPage() {
   const [subjDeptId, setSubjDeptId] = useState('');
 
   const loadData = async () => {
+    setIsLoading(true);
     try {
       const [dRes, cRes, sRes, tRes] = await Promise.all([
         fetch('/api/departments'),
@@ -42,6 +45,8 @@ export default function AcademicsPage() {
       if (tRes.ok) setTeachers(await tRes.json());
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,6 +162,11 @@ export default function AcademicsPage() {
           </button>
         </div>
 
+        {/* Database Loading Indicator */}
+        {isLoading && (
+          <DatabaseLoadingIndicator label="Querying departments, classes, subjects, and faculty rosters from database..." />
+        )}
+
         {/* Tab 1: Departments */}
         {activeTab === 'departments' && (
           <div className="space-y-4">
@@ -198,7 +208,10 @@ export default function AcademicsPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {departments.map((d) => (
+              {isLoading ? (
+                Array.from({ length: 6 }).map((_, i) => <TableSkeleton key={i} rows={2} cols={2} />)
+              ) : (
+                departments.map((d) => (
                 <div key={d.id} className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
                   <span className="px-2.5 py-1 text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-600 rounded-md">
                     {d.code}
@@ -209,7 +222,8 @@ export default function AcademicsPage() {
                     <span>Teachers: {d._count?.teachers || 0}</span>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
         )}

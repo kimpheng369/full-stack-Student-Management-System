@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { CustomSelect } from '@/frontend/components/custom-select';
+import { TableSkeleton, DatabaseLoadingIndicator } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function ReportsPage() {
@@ -320,11 +321,14 @@ export default function ReportsPage() {
         </div>
 
         {/* Generated Report Table Preview */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Report Data Preview ({reportData.length} records)
-            </h3>
+        {isLoading ? (
+          <TableSkeleton rows={6} cols={6} />
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Report Data Preview ({reportData.length} records)
+              </h3>
             <span className="text-xs text-slate-400 font-semibold">
               Ready for Export
             </span>
@@ -424,7 +428,8 @@ export default function ReportsPage() {
               )}
             </table>
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

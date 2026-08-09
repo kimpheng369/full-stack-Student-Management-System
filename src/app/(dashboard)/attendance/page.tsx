@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { AttendanceStatus } from '@prisma/client';
 import { CustomSelect } from '@/frontend/components/custom-select';
+import { TableSkeleton, DatabaseLoadingIndicator } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function AttendancePage() {
@@ -272,24 +273,21 @@ export default function AttendancePage() {
         </div>
 
         {/* Student Interactive Grid Table */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="py-4 px-6">Student Name</th>
-                  <th className="py-4 px-4">Student ID</th>
-                  <th className="py-4 px-6 text-center">Attendance Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={3} className="py-12 text-center text-slate-400">
-                      Loading class roster...
-                    </td>
+        {isLoading ? (
+          <TableSkeleton rows={6} cols={3} />
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                    <th className="py-4 px-6">Student Name</th>
+                    <th className="py-4 px-4">Student ID</th>
+                    <th className="py-4 px-6 text-center">Attendance Status</th>
                   </tr>
-                ) : students.length > 0 ? (
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {students.length > 0 ? (
                   students.map((s) => {
                     const currentStatus = attendanceMap[s.id] || 'PRESENT';
 
@@ -372,7 +370,8 @@ export default function AttendancePage() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

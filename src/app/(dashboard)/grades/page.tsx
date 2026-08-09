@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/frontend/components/dashboard-layout';
 import { Award, Save, Calculator, CheckCircle2, AlertOctagon } from 'lucide-react';
 import { calculateGrade } from '@/backend/lib/utils';
 import { CustomSelect } from '@/frontend/components/custom-select';
+import { TableSkeleton } from '@/frontend/components/skeleton';
 import { toast } from 'sonner';
 
 export default function GradesPage() {
@@ -192,30 +193,27 @@ export default function GradesPage() {
         </div>
 
         {/* Grade Matrix Table */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="py-4 px-6">Student</th>
-                  <th className="py-4 px-3 text-center">Assignment (20%)</th>
-                  <th className="py-4 px-3 text-center">Quiz (20%)</th>
-                  <th className="py-4 px-3 text-center">Midterm (30%)</th>
-                  <th className="py-4 px-3 text-center">Final (30%)</th>
-                  <th className="py-4 px-3 text-center">Total Score</th>
-                  <th className="py-4 px-3 text-center">Letter Grade</th>
-                  <th className="py-4 px-3 text-center">GPA</th>
-                  <th className="py-4 px-6 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={9} className="py-12 text-center text-slate-400">
-                      Loading grade matrix...
-                    </td>
+        {isLoading ? (
+          <TableSkeleton rows={6} cols={9} />
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                    <th className="py-4 px-6">Student</th>
+                    <th className="py-4 px-3 text-center">Assignment (20%)</th>
+                    <th className="py-4 px-3 text-center">Quiz (20%)</th>
+                    <th className="py-4 px-3 text-center">Midterm (30%)</th>
+                    <th className="py-4 px-3 text-center">Final (30%)</th>
+                    <th className="py-4 px-3 text-center">Total Score</th>
+                    <th className="py-4 px-3 text-center">Letter Grade</th>
+                    <th className="py-4 px-3 text-center">GPA</th>
+                    <th className="py-4 px-6 text-center">Status</th>
                   </tr>
-                ) : students.length > 0 ? (
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {students.length > 0 ? (
                   students.map((s) => {
                     const scores = gradeInputs[s.id] || { assignment: 0, quiz: 0, midterm: 0, finalExam: 0 };
                     const { total, letterGrade, gpa, isPass } = calculateGrade(
@@ -328,7 +326,8 @@ export default function GradesPage() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
