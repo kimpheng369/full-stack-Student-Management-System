@@ -53,6 +53,7 @@ export function GradeChart({ data }: GradeChartProps) {
           />
           <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <Tooltip
+            cursor={{ fill: 'rgba(255, 255, 255, 0.05)', rx: 8 }}
             contentStyle={{
               backgroundColor: '#0f172a',
               borderColor: '#334155',
