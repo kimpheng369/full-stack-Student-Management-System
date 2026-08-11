@@ -70,6 +70,31 @@ A full-stack web application built with Next.js 15, TypeScript, Prisma ORM, Tail
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Running with Docker & Docker Compose
+
+1. **Quick Start with Docker Compose**:
+   ```bash
+   docker-compose up -d --build
+   ```
+   This will spin up:
+   - Next.js application container on `http://localhost:3000`
+   - PostgreSQL 16 database container on port `5432`
+
+2. **Run Database Migrations & Seed Data inside Docker**:
+   ```bash
+   # Push schema to the containerized database
+   docker-compose exec web npx prisma db push
+
+   # Seed database with demo accounts & data
+   docker-compose exec web npx prisma db seed
+   ```
+
+3. **Building single Docker Image**:
+   ```bash
+   docker build -t student-management-system .
+   docker run -p 3000:3000 --env-file .env student-management-system
+   ```
+
 ---
 
 ## Deployment Options
