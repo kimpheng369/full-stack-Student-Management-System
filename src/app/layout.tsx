@@ -8,7 +8,7 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Student Management System | Production Grade SaaS',
+  title: 'FullStackStudentManage (DEMO) | Full-Stack SaaS',
   description: 'Full-stack Student Management System with Next.js 15, Prisma, Auth.js, and Tailwind CSS',
 };
 

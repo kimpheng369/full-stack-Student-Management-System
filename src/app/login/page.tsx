@@ -92,8 +92,8 @@ export default function LoginPage() {
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-xl shadow-blue-500/25 mb-3">
             <School className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-1.5">
-            EduManage <span className="text-blue-500">Pro</span>
+          <h1 className="text-xl font-black tracking-tight text-white flex items-center justify-center gap-1.5 flex-wrap">
+            FullStackStudentManage <span className="text-blue-500">(DEMO)</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Student Management System Portal

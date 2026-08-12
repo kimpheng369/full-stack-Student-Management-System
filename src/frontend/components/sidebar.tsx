@@ -90,10 +90,10 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
             </div>
             {!collapsed && (
               <div className="flex flex-col">
-                <span className="font-bold text-slate-900 dark:text-white text-base tracking-tight leading-none">
-                  EduManage
+                <span className="font-bold text-slate-900 dark:text-white text-sm tracking-tight leading-none">
+                  FullStackStudentManage (DEMO)
                 </span>
-                <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-0.5">
                   {role} Portal
                 </span>
               </div>
