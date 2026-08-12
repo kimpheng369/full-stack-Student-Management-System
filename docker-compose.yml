@@ -10,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/student_management?sslmode=disable}
+      - DATABASE_URL=${DOCKER_DATABASE_URL:-postgresql://postgres:postgres@db:5432/student_management?sslmode=disable}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-edumanage-super-secret-key-2026}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - NODE_ENV=production
